@@ -1,19 +1,57 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserSignIn } from 'src/common/datatype/dto/auth.dto';
+import {
+  AuthResponse,
+  UserSignIn,
+  UserSignUp,
+} from 'src/common/datatype/dto/auth.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('auth')
 @Controller('auth')
+@UseInterceptors(FileInterceptor('no-file'))
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @ApiResponse({
     status: 200,
-    description: 'Return the hello world string',
+    description: 'Return token for user login',
+    type: AuthResponse,
   })
-  login(@Body() userSignIn: UserSignIn): string {
-    return this.authService.getHello();
+  @ApiResponse({
+    status: 403,
+    description: 'User not found',
+  })
+  login(@Body() userSignIn: UserSignIn): Promise<AuthResponse> {
+    const token = this.authService.signIn(userSignIn);
+    if (!token) throw new ForbiddenException('User not found');
+    return token;
+  }
+
+  @Post('signup')
+  @ApiResponse({
+    status: 200,
+    description: 'Return token for user signup and login',
+    type: AuthResponse,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'User already exists or missing information',
+  })
+  async signup(@Body() userSignUp: UserSignUp): Promise<AuthResponse> {
+    const token = await this.authService.signUp(userSignUp);
+    if (!token)
+      throw new ForbiddenException(
+        'User already exists or something went wrong',
+      );
+    return token;
   }
 }
