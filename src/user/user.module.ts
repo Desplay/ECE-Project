@@ -13,5 +13,6 @@ import { UserSchema } from 'src/common/datatype/entity/user.entity';
     ]),
   ],
   providers: [UserService],
+  exports: [UserService],
 })
 export class UserModule {}

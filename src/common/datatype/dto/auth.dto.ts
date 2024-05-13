@@ -16,10 +16,10 @@ export class UserSignUp {
   password: string;
 
   @ApiProperty()
-  name: string;
+  username: string;
 }
 
 export class AuthResponse {
   @ApiProperty()
-  token: string;
+  bearer: string;
 }
