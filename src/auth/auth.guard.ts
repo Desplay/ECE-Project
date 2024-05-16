@@ -17,6 +17,7 @@ export class AuthGuard implements CanActivate {
     if (!payload) {
       throw new UnauthorizedException('Missing or invalid token');
     }
+
     return true;
   }
 }

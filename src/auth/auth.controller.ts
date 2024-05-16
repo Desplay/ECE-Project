@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   ForbiddenException,
+  Get,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
@@ -20,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
+  @Get('login')
   @ApiResponse({
     status: 200,
     description: 'Return token for user login',
@@ -30,9 +31,10 @@ export class AuthController {
     status: 403,
     description: 'User not found',
   })
-  login(@Body() userSignIn: UserSignIn): Promise<AuthResponse> {
-    const token = this.authService.signIn(userSignIn);
-    if (!token) throw new ForbiddenException('User not found');
+  async login(@Body() userSignIn: UserSignIn): Promise<AuthResponse> {
+    const token = await this.authService.signIn(userSignIn);
+    if (!token)
+      throw new ForbiddenException('User not found or invalid data');
     return token;
   }
 

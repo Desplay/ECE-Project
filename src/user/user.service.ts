@@ -12,23 +12,26 @@ export class UserService {
 
   async createUser(user: UserSignUp): Promise<UserEntity> {
     const createdUser = new this.userModel(user);
-    return createdUser.save();
+    return await createdUser.save();
   }
 
-  async findOneByName(username: string): Promise<User> {
-    return this.userModel.findOne({ name: username });
+  async findUser(input: string): Promise<User> {
+    let user: User;
+    try {
+      user = await this.userModel.findById(input);
+    } catch (error) {}
+    if (!user) {
+      user =
+        (await this.userModel.findOne({ username: input })) ||
+        (await this.userModel.findOne({ email: input }));
+    }
+    return user;
   }
 
-  async findOneByEmail(email: string): Promise<User> {
-    return this.userModel.findOne({ email: email });
-  }
-
-  async findOneById(id: string): Promise<User> {
-    return this.userModel.findById(id);
-  }
-
-  async throwUserId(email: string): Promise<string> {
-    const user = await this.userModel.findOne({ email: email });
+  async throwUserId(input: string): Promise<string> {
+    const user =
+      (await this.userModel.findOne({ email: input })) ||
+      (await this.userModel.findOne({ username: input }));
     return user._id;
   }
 }

@@ -21,11 +21,15 @@ export class AuthService {
 
   // đăng nhập sau đó trả về token
   async signIn(user: UserSignIn): Promise<AuthResponse> {
-    const user_found = await this.userService.findOneByEmail(user.email);
+    const user_found =
+      (await this.userService.findUser(user.email)) ||
+      (await this.userService.findUser(user.username));
     if (!user_found) {
       return undefined;
     }
-    const userId = await this.userService.throwUserId(user.email);
+    const userId = await this.userService.throwUserId(
+      user.email || user.username,
+    );
     const payload = {
       userid: userId,
     };
@@ -34,7 +38,7 @@ export class AuthService {
   }
 
   async signUp(user: UserSignUp): Promise<AuthResponse> {
-    const user_found = await this.userService.findOneByEmail(user.email);
+    const user_found = await this.userService.findUser(user.email);
     if (user_found) {
       return undefined;
     }
