@@ -10,9 +10,10 @@ export class UserService {
     @InjectModel('User') private readonly userModel: Model<UserEntity>,
   ) {}
 
-  async createUser(user: UserSignUp): Promise<UserEntity> {
+  async createUser(user: UserSignUp): Promise<string> {
     const createdUser = new this.userModel(user);
-    return await createdUser.save();
+    await createdUser.save();
+    return createdUser._id;
   }
 
   async findUser(input: string): Promise<User> {
@@ -33,5 +34,14 @@ export class UserService {
       (await this.userModel.findOne({ email: input })) ||
       (await this.userModel.findOne({ username: input }));
     return user._id;
+  }
+
+  async updateSurvey(userId: string, survey: any): Promise<User> {
+    console.log(userId, survey);
+    return await this.userModel.findByIdAndUpdate(
+      userId,
+      { survey: survey },
+      { new: true },
+    );
   }
 }

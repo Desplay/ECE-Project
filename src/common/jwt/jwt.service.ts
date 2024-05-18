@@ -22,7 +22,7 @@ export class JWTService {
     const newPayload = {
       ...payload,
       iat: new Date().getTime(),
-      exp: new Date().getTime() + 3600,
+      exp: new Date().getTime() + 1000 * 60 * 60 * 24 * 7,
     };
     return this.jwtService.sign(newPayload);
   }
@@ -32,7 +32,7 @@ export class JWTService {
     if (!payload) {
       return undefined;
     }
-    const user = await this.userService.findUser(payload.userid);
+    const user = await this.userService.findUser(payload.userId);
     if (!user) {
       return undefined;
     }
@@ -46,7 +46,7 @@ export class JWTService {
 
   private async validatePayload(payload: Payload): Promise<boolean> {
     const valid_payload =
-      payload['user_id'] && payload['iat'] && payload['exp'];
+      payload['userid'] && payload['iat'] && payload['exp'];
     if (!valid_payload) {
       return false;
     }
@@ -54,7 +54,7 @@ export class JWTService {
     const Invalid_time =
       timeNow < payload['iat'] || timeNow > payload['exp'];
     if (Invalid_time) return false;
-    const user = await this.userService.findUser(payload.userid);
+    const user = await this.userService.findUser(payload.userId);
     return user ? true : false;
   }
 }

@@ -4,6 +4,7 @@ import {
   UserSignIn,
   UserSignUp,
 } from 'src/common/datatype/dto/auth.dto';
+import { User } from 'src/common/datatype/entity/user.entity';
 import { JWTService } from 'src/common/jwt/jwt.service';
 import { UserService } from 'src/user/user.service';
 
@@ -14,39 +15,47 @@ export class AuthService {
     private readonly jwtService: JWTService,
   ) {}
 
-  getHello(): string {
-    console.log(process.env.TEST);
-    return 'Hello World!';
-  }
-
   // đăng nhập sau đó trả về token
   async signIn(user: UserSignIn): Promise<AuthResponse> {
-    const user_found =
+    const user_found: User =
       (await this.userService.findUser(user.email)) ||
       (await this.userService.findUser(user.username));
     if (!user_found) {
       return undefined;
     }
-    const userId = await this.userService.throwUserId(
+    const userId: string = await this.userService.throwUserId(
       user.email || user.username,
     );
     const payload = {
-      userid: userId,
+      userId: userId,
     };
-    const token = await this.jwtService.generateToken(payload);
+    const token: string = await this.jwtService.generateToken(payload);
     return { bearer: token };
   }
 
+  // Tạo user sau đó trả về token
   async signUp(user: UserSignUp): Promise<AuthResponse> {
-    const user_found = await this.userService.findUser(user.email);
+    const user_found: User = await this.userService.findUser(user.email);
     if (user_found) {
       return undefined;
     }
-    const userId = await this.userService.createUser(user);
+    await this.userService.createUser(user);
+    const userId: string = await this.userService.throwUserId(user.email);
     const payload = {
       userid: userId,
     };
-    const token = await this.jwtService.generateToken(payload);
+    const token: string = await this.jwtService.generateToken(payload);
     return { bearer: token };
+  }
+
+  // Kiểm tra xem user có phải admin không
+  async isAdmin(user: UserSignIn): Promise<boolean> {
+    const user_found: User =
+      (await this.userService.findUser(user.email)) ||
+      (await this.userService.findUser(user.username));
+    if (!user_found) {
+      return undefined;
+    }
+    return user_found.usertype === 'ADMIN';
   }
 }
