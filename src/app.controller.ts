@@ -1,8 +1,9 @@
 import { Controller, Get, Redirect } from '@nestjs/common';
+import { ApiHideProperty } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  @Get()
+  @Get('/')
   @Redirect('/api')
   getRoot() {}
 }

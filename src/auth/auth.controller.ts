@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   AuthResponse,
+  LoginResponse,
   UserSignIn,
   UserSignUp,
 } from 'src/common/datatype/dto/auth.dto';
@@ -31,11 +32,12 @@ export class AuthController {
     status: 403,
     description: 'User not found',
   })
-  async login(@Body() userSignIn: UserSignIn): Promise<AuthResponse> {
+  async login(@Body() userSignIn: UserSignIn): Promise<LoginResponse> {
     const token = await this.authService.signIn(userSignIn);
     if (!token)
       throw new ForbiddenException('User not found or invalid data');
-    return token;
+    const isAdmin = await this.authService.isAdmin(userSignIn);
+    return { ...token, isAdmin };
   }
 
   @Post('signup')

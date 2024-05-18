@@ -7,15 +7,16 @@ import { createReadStream } from 'streamifier';
 export class CloudinaryService {
   constructor() {}
   uploadFile(
-    file: Express.Multer.File,
-    postId: string,
+    file: any,
+    productId: string,
+    index: number = 0,
   ): Promise<CloudinaryResponse> {
-    file.filename = postId;
+    file.filename = `${productId}-${index}`;
     return new Promise<CloudinaryResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: 'To-Do-App',
-          public_id: postId,
+          folder: 'ECE-Project',
+          public_id: file.filename,
         },
         (error, result) => {
           if (error) return reject(error);
@@ -26,13 +27,13 @@ export class CloudinaryService {
     });
   }
 
-  async removeFile(postid: string): Promise<CloudinaryResponse> {
-    const file_exist = await cloudinary.api.resource(
-      `To-Do-App/${postid}`,
-    );
-    if (!file_exist) {
-      return null;
-    }
-    return cloudinary.uploader.destroy(`To-Do-App/${postid}`);
+  async removeFileFromUrl(imageUrl: string): Promise<CloudinaryResponse> {
+    const publicId = `ECE-Project/${imageUrl.split('/').pop().split('.')[0]}`;
+    return new Promise<CloudinaryResponse>((resolve, reject) => {
+      cloudinary.uploader.destroy(publicId, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
   }
 }

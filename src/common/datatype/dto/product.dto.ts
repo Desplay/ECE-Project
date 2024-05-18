@@ -1,38 +1,75 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Survey } from './user.dto';
 
 export class ProductDTO {
-  @ApiProperty()
+  @ApiProperty({ type: 'string' })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'string' })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'number' })
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'string', isArray: true })
   imageUrl?: string[];
 
-  @ApiProperty()
+  @ApiProperty({ type: 'number' })
   slot: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: 'number' })
+  rating: number;
+
+  @ApiProperty({ type: 'string' })
   description: string;
+
+  @ApiProperty({ type: Survey })
+  productType: {
+    category: string;
+    color: string;
+    size: string;
+    model: string;
+  };
+}
+
+export class ProductResponse {
+  @ApiProperty({ type: 'string' })
+  message: string;
+
+  @ApiProperty({ type: ProductDTO })
+  products: ProductDTO;
 }
 
 export class ProductInput {
-  @ApiProperty()
+  @ApiProperty({ required: true })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   price: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   slot?: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: true })
   description: string;
 
   @ApiProperty({ type: 'file', isArray: true })
   image?: Express.Multer.File[];
+
+  @ApiProperty({ required: true })
+  category: string;
+
+  @ApiProperty({ required: true })
+  color: string;
+
+  @ApiProperty({ required: true })
+  size: string;
+
+  @ApiProperty({ required: true })
+  model: string;
+}
+
+export class UpdateProductInput extends ProductInput {
+  @ApiProperty({ required: true })
+  productId: string;
 }
