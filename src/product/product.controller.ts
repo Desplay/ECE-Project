@@ -53,7 +53,7 @@ export class ProductController {
     @UploadedFiles() images: any,
   ): Promise<ProductResponse> {
     const userId = (await this.jwtService.getPayloadFromHeader(header))
-      .userId;
+      .userid;
     let addedProduct: ProductEntity = null;
     if (images) {
       addedProduct = await this.productService.createProduct(
@@ -112,7 +112,7 @@ export class ProductController {
     @UploadedFiles() images: any,
   ): Promise<ProductResponse> {
     const userId = (await this.jwtService.getPayloadFromHeader(header))
-      .userId;
+      .userid;
     let updatedProduct: ProductEntity = null;
     if (images) {
       updatedProduct = await this.productService.updateProductById(

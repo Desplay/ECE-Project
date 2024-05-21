@@ -18,7 +18,6 @@ export class UserGuard implements CanActivate {
     if (!payload) {
       throw new UnauthorizedException('Missing or invalid token');
     }
-
     return true;
   }
 }
@@ -37,7 +36,7 @@ export class AdminGuard implements CanActivate {
     if (!payload) {
       throw new UnauthorizedException('Missing or invalid token');
     }
-    const user = await this.userService.findUser(payload.userId);
+    const user = await this.userService.findUser(payload.userid);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }

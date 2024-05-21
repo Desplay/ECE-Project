@@ -6,10 +6,10 @@ export interface User extends Document {
   email: string;
   password: string;
   survey: {
-    model: string;
-    size: string;
-    color: string;
-    category: string;
+    model: string[];
+    size: string[];
+    color: string[];
+    category: string[];
   };
 }
 
@@ -21,10 +21,10 @@ export const UserSchema = new Schema<User>({
   email: { type: String, required: true },
   password: { type: String, required: true },
   survey: {
-    model: { type: String, required: false, default: '' },
-    size: { type: String, required: false, default: '' },
-    color: { type: String, required: false, default: '' },
-    category: { type: String, required: false, default: '' },
+    model: { type: [String], required: false, default: '' },
+    size: { type: [String], required: false, default: '' },
+    color: { type: [String], required: false, default: '' },
+    category: { type: [String], required: false, default: '' },
   },
 });
 

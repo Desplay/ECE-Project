@@ -39,7 +39,7 @@ export class UserController {
   })
   async getProfile(@Headers() headers: any): Promise<ProfileDTO> {
     const userId = (await this.jwtService.getPayloadFromHeader(headers))
-      .userId;
+      .userid;
     const user = await this.userService.findUser(userId);
     return new UserEntityToDTO().transform(user);
   }
@@ -59,7 +59,7 @@ export class UserController {
     @Body() surveyInput: Survey,
   ): Promise<MessageResponse> {
     const userId = (await this.jwtService.getPayloadFromHeader(headers))
-      .userId;
+      .userid;
     const status = await this.userService.updateSurvey(
       userId,
       surveyInput,

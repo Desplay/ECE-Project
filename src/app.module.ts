@@ -5,6 +5,8 @@ import { CommonModule } from './common/common.module';
 import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { ProductModule } from './product/product.module';
+import { CartModule } from './cart/cart.module';
+import { ReceiptModule } from './receipt/receipt.module';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { ProductModule } from './product/product.module';
     CommonModule,
     UserModule,
     ProductModule,
+    CartModule,
+    ReceiptModule,
   ],
   controllers: [AppController],
 })
