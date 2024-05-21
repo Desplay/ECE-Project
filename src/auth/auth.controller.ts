@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Get,
   Post,
+  Request,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -22,7 +23,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('login')
+  @Post('login')
   @ApiResponse({
     status: 200,
     description: 'Return token for user login',

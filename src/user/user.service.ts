@@ -37,11 +37,8 @@ export class UserService {
   }
 
   async updateSurvey(userId: string, survey: any): Promise<User> {
-    console.log(userId, survey);
-    return await this.userModel.findByIdAndUpdate(
-      userId,
-      { survey: survey },
-      { new: true },
-    );
+    return await this.userModel.findByIdAndUpdate(userId, {
+      survey: survey,
+    });
   }
 }
