@@ -23,11 +23,11 @@ export class AuthService {
     if (!user_found) {
       return undefined;
     }
-    const userId: string = await this.userService.throwUserId(
+    const userid: string = await this.userService.throwUserId(
       user.email || user.username,
     );
     const payload = {
-      userId: userId,
+      userid: userid,
     };
     const token: string = await this.jwtService.generateToken(payload);
     return { bearer: token };
@@ -40,9 +40,9 @@ export class AuthService {
       return undefined;
     }
     await this.userService.createUser(user);
-    const userId: string = await this.userService.throwUserId(user.email);
+    const userid: string = await this.userService.throwUserId(user.email);
     const payload = {
-      userid: userId,
+      userid: userid,
     };
     const token: string = await this.jwtService.generateToken(payload);
     return { bearer: token };

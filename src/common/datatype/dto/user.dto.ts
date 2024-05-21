@@ -2,16 +2,16 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class Survey {
   @ApiProperty({ required: true })
-  category: string;
+  category: string[];
 
   @ApiProperty({ required: true })
-  color: string;
+  color: string[];
 
   @ApiProperty({ required: true })
-  size: string;
+  size: string[];
 
   @ApiProperty({ required: true })
-  model: string;
+  model: string[];
 }
 
 export class ProfileDTO {

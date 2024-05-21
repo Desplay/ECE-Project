@@ -17,7 +17,7 @@ export class UserService {
   }
 
   async findUser(input: string): Promise<User> {
-    let user: User;
+    let user: User = null;
     try {
       user = await this.userModel.findById(input);
     } catch (error) {}

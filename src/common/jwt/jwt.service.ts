@@ -32,7 +32,8 @@ export class JWTService {
     if (!payload) {
       return undefined;
     }
-    const user = await this.userService.findUser(payload.userId);
+    console.log(payload);
+    const user = await this.userService.findUser(payload.userid);
     if (!user) {
       return undefined;
     }
@@ -54,7 +55,7 @@ export class JWTService {
     const Invalid_time =
       timeNow < payload['iat'] || timeNow > payload['exp'];
     if (Invalid_time) return false;
-    const user = await this.userService.findUser(payload.userId);
+    const user = await this.userService.findUser(payload.userid);
     return user ? true : false;
   }
 }
