@@ -32,7 +32,6 @@ export class JWTService {
     if (!payload) {
       return undefined;
     }
-    console.log(payload);
     const user = await this.userService.findUser(payload.userid);
     if (!user) {
       return undefined;

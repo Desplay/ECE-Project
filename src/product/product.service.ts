@@ -56,6 +56,10 @@ export class ProductService {
     return await this.productModel.find();
   }
 
+  async findProductById(productId: string): Promise<Product> {
+    return await this.productModel.findById(productId);
+  }
+
   async updateProductById(
     productId: string,
     userId: string,
