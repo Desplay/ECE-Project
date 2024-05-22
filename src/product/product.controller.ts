@@ -81,7 +81,7 @@ export class ProductController {
   @ApiResponse({
     status: 200,
     description: 'Return product',
-    type: ProductDTO,
+    type: [ProductDTO],
   })
   @ApiResponse({
     status: 403,
@@ -93,6 +93,22 @@ export class ProductController {
     return products.map((product) =>
       new ProductEntityToDTO().transform(product),
     );
+  }
+
+  @Get('get/:productId')
+  @ApiResponse({
+    status: 200,
+    description: 'Return product',
+    type: ProductDTO,
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Product not found',
+  })
+  async getProductById(productId: string): Promise<ProductDTO> {
+    const product = await this.productService.findProductById(productId);
+    if (!product) throw new ForbiddenException('Product not found');
+    return new ProductEntityToDTO().transform(product);
   }
 
   @UseGuards(AdminGuard)

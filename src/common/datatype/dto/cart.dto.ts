@@ -3,5 +3,7 @@ import { ProductDTO } from './product.dto';
 
 export class CartResponse {
   @ApiProperty()
-  products: ProductDTO[];
+  productsInCart: ProductDTO[];
+  @ApiProperty()
+  isPurchased: boolean;
 }

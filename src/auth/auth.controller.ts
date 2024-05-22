@@ -2,9 +2,7 @@ import {
   Body,
   Controller,
   ForbiddenException,
-  Get,
   Post,
-  Request,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
