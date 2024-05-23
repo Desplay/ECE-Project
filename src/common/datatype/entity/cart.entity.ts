@@ -2,7 +2,7 @@ import { model, Schema, Document } from 'mongoose';
 
 export interface Cart extends Document {
   userId: { type: Schema.Types.ObjectId; ref: 'User' } | string;
-  isPurchased: boolean;
+  status: 'NONE' | 'PENDING' | 'SUCCESS';
   products: [
     {
       productId: { type: Schema.Types.ObjectId; ref: 'Product' } | string;
@@ -15,7 +15,11 @@ export interface CartEntity extends Cart, Document {}
 
 export const CartSchema = new Schema<Cart>({
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  isPurchased: { type: Boolean, default: false },
+  status: {
+    type: String,
+    enum: ['NONE', 'PENDING', 'SUCCESS'],
+    default: 'NONE',
+  },
   products: [
     {
       _id: false,

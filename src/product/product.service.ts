@@ -57,7 +57,11 @@ export class ProductService {
   }
 
   async findProductById(productId: string): Promise<Product> {
-    return await this.productModel.findById(productId);
+    try {
+      return await this.productModel.findById(productId);
+    } catch (error) {
+      return undefined;
+    }
   }
 
   async updateProductById(

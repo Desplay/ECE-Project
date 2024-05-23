@@ -1,9 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ProductDTO } from './product.dto';
 
+export class ProductInCartDTO {
+  @ApiProperty()
+  productId: string;
+  @ApiProperty()
+  name: string;
+  @ApiProperty()
+  price: number;
+  @ApiProperty()
+  imageUrl: string[];
+  @ApiProperty()
+  quantity: number;
+}
 export class CartResponse {
   @ApiProperty()
-  productsInCart: ProductDTO[];
+  status: 'NONE' | 'PENDING' | 'SUCCESS';
   @ApiProperty()
-  isPurchased: boolean;
+  productsInCart: ProductInCartDTO[];
 }

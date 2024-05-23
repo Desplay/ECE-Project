@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Get,
   Headers,
+  Param,
   Patch,
   Post,
   UploadedFiles,
@@ -105,7 +106,8 @@ export class ProductController {
     status: 403,
     description: 'Product not found',
   })
-  async getProductById(productId: string): Promise<ProductDTO> {
+  async getProductById(@Param() input: any): Promise<ProductDTO> {
+    const productId = input.productId;
     const product = await this.productService.findProductById(productId);
     if (!product) throw new ForbiddenException('Product not found');
     return new ProductEntityToDTO().transform(product);
