@@ -39,12 +39,19 @@ export class CartController {
     status: 403,
     description: 'Cart not found',
   })
-  async getCart(@Headers() header: any): Promise<CartResponse> {
+  async getCart(
+    @Headers() header: any,
+  ): Promise<CartResponse | MessageResponse> {
     const userid = (await this.jwtService.getPayloadFromHeader(header))
       .userid;
     const cart = await this.cartService.getCart(userid);
     if (!cart) {
       throw new ForbiddenException('Cart not found');
+    }
+    if (cart.status == 'SUCCESS') {
+      return {
+        message: 'Cart is already checked out',
+      };
     }
     const productsInCart = [];
     for await (const product of cart.products) {
@@ -63,7 +70,7 @@ export class CartController {
       });
     }
     return {
-      isPurchased: cart.isPurchased,
+      status: cart.status,
       productsInCart,
     };
   }
@@ -89,7 +96,13 @@ export class CartController {
     if (!product) {
       throw new ForbiddenException('Product not found');
     }
-    await this.cartService.addProductToCart(userid, productid);
+    const status = await this.cartService.addProductToCart(
+      userid,
+      productid,
+    );
+    if (!status) {
+      throw new ForbiddenException('cart not yet checked out');
+    }
     return {
       message: 'Product added to cart',
     };
@@ -116,7 +129,15 @@ export class CartController {
     if (!product) {
       throw new ForbiddenException('Product not found');
     }
-    await this.cartService.removeProductFromCart(userid, productid);
+    const status = await this.cartService.removeProductFromCart(
+      userid,
+      productid,
+    );
+    if (!status) {
+      throw new ForbiddenException(
+        'Product not found in cart or cart is checked out',
+      );
+    }
     return {
       message: 'Product removed from cart',
     };
