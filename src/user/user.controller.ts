@@ -8,7 +8,7 @@ import {
   ForbiddenException,
   UseInterceptors,
 } from '@nestjs/common';
-import { UserGuard } from 'src/auth/auth.guard';
+import { AdminGuard, UserGuard } from 'src/auth/auth.guard';
 import { UserService } from './user.service';
 import { JWTService } from 'src/common/jwt/jwt.service';
 import { ProfileDTO, Survey } from 'src/common/datatype/dto/user.dto';
@@ -68,5 +68,21 @@ export class UserController {
       throw new ForbiddenException('Survey update failed');
     }
     return { message: 'Survey updated successfully' };
+  }
+
+  @UseGuards(AdminGuard)
+  @Get('all')
+  @ApiResponse({
+    status: 200,
+    description: 'Return all users',
+    type: [ProfileDTO],
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'User not found',
+  })
+  async getAllUsers(): Promise<ProfileDTO[]> {
+    const users = await this.userService.getAllUsers();
+    return users.map((user) => new UserEntityToDTO().transform(user));
   }
 }

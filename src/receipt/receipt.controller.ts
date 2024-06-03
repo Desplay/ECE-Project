@@ -9,7 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ReceiptService } from './receipt.service';
-import { UserGuard } from 'src/auth/auth.guard';
+import { AdminGuard, UserGuard } from 'src/auth/auth.guard';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JWTService } from 'src/common/jwt/jwt.service';
 import { MessageResponse } from 'src/common/datatype/dto/response.dto';
@@ -147,5 +147,51 @@ export class ReceiptController {
       throw new ForbiddenException('Receipt paid failed');
     }
     return { message: 'Receipt paid' };
+  }
+
+  @UseGuards(AdminGuard)
+  @Get('all')
+  @ApiResponse({
+    status: 200,
+    description: 'Return all receipts',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Receipt not found',
+  })
+  async getAllReceipts(): Promise<ReceiptDTO[]> {
+    const receipts = await this.receiptService.getAllReceipts();
+    if (!receipts) {
+      throw new ForbiddenException('Receipt not found');
+    }
+    const receiptsReturn = [];
+    for await (const receipt of receipts) {
+      const cartFound = await this.cartService.getCartById(
+        receipt.cartId.toString(),
+      );
+      const productsInCart = [];
+      for await (const product of cartFound.products) {
+        const productReturn = new ProductEntityToDTO().transform(
+          await this.productService.findProductById(
+            product.productId.toString(),
+          ),
+        );
+        delete productReturn.productType;
+        delete productReturn.slot;
+        delete productReturn.rating;
+        delete productReturn.description;
+        productsInCart.push({
+          ...productReturn,
+          quantity: product.quantity,
+        });
+      }
+      receiptsReturn.push(
+        new ReceiptEntityToDTO().transform({
+          receiptValue: receipt,
+          productsValue: productsInCart,
+        }),
+      );
+    }
+    return receiptsReturn;
   }
 }

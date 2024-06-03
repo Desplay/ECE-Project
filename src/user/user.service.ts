@@ -36,6 +36,10 @@ export class UserService {
     return user._id;
   }
 
+  async getAllUsers(): Promise<User[]> {
+    return await this.userModel.find();
+  }
+
   async updateSurvey(userId: string, survey: any): Promise<User> {
     return await this.userModel.findByIdAndUpdate(userId, {
       survey: survey,

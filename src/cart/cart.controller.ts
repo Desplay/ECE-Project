@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UserGuard } from 'src/auth/auth.guard';
+import { AdminGuard, UserGuard } from 'src/auth/auth.guard';
 import { CartResponse } from 'src/common/datatype/dto/cart.dto';
 import { CartService } from './cart.service';
 import { JWTService } from 'src/common/jwt/jwt.service';
@@ -44,14 +44,9 @@ export class CartController {
   ): Promise<CartResponse | MessageResponse> {
     const userid = (await this.jwtService.getPayloadFromHeader(header))
       .userid;
-    const cart = await this.cartService.getCart(userid);
+    const cart = (await this.cartService.getCart(userid, 'NONE'))[0];
     if (!cart) {
       throw new ForbiddenException('Cart not found');
-    }
-    if (cart.status == 'SUCCESS') {
-      return {
-        message: 'Cart is already checked out',
-      };
     }
     const productsInCart = [];
     for await (const product of cart.products) {
@@ -142,4 +137,5 @@ export class CartController {
       message: 'Product removed from cart',
     };
   }
+
 }

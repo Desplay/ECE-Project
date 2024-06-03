@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CartEntity } from 'src/common/datatype/entity/cart.entity';
+import { Cart, CartEntity } from 'src/common/datatype/entity/cart.entity';
 
 @Injectable()
 export class CartService {
@@ -33,13 +33,11 @@ export class CartService {
     }
   }
 
-  async getCart(userId: string): Promise<CartEntity> {
-    return await this.cartModel.findOne({
-      userId,
-    });
+  async getCart(userId: string, status): Promise<Cart[]> {
+    return await this.cartModel.find({ userId, status });
   }
 
-  async getCartById(cartId: string): Promise<CartEntity> {
+  async getCartById(cartId: string): Promise<Cart> {
     return await this.cartModel.findById(cartId);
   }
 
