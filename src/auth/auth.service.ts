@@ -20,6 +20,9 @@ export class AuthService {
     const user_found: User =
       (await this.userService.findUser(user.email)) ||
       (await this.userService.findUser(user.username));
+    if (user_found.password !== user.password) {
+      return undefined;
+    }
     if (!user_found) {
       return undefined;
     }
